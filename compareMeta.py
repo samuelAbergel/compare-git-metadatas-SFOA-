@@ -5,19 +5,13 @@ def list_metadata_names(folder_path, excluded_types, file_extensions, metadata_d
     metadata_names = []
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            # Retirer '-meta.xml' si présent
-            # Client_Record_Page.flexipage-meta.xml
-            # row-app/main/default/flexipages/Client_Record_Page.flexipage-meta.xml
-            # row-app /main/default/  Client_Record_Page.flexipage-meta.xml
             full_path = os.path.join(root, file)
-            # print('full_path : ' + full_path)
             folder = 'COMMON' if folder_path == common_path else 'SFOA' if folder_path == sfoa_path else 'ROW'
             if file.endswith('-meta.xml'):
                 file = file[:-9]  # Supprimer '-meta.xml'
                 file_extension = os.path.splitext(file)[1]
                 file_name = os.path.basename(file)[:- len(file_extension)]
                 metadata_type = file_extension[1:]
-                #print('full_path : ' + full_path + ' file_extension : ' + file_extension + ' file_name : ' + file_name + ' metadata_type : ' + metadata_type)
                 key = (root[len(folder_path) + 1:] + file_name)
                 if file_extension in file_extensions or file_extension not in excluded_types:
                     if key not in metadata_dict:
@@ -79,8 +73,6 @@ for folder in folders:
 # Conversion du dictionnaire en DataFrame
 metadata_df = pd.DataFrame.from_dict(metadata_dict, orient='index')
 
-# Sélection des colonnes pertinentes
-# Assurez-vous que les noms des colonnes correspondent exactement aux clés du dictionnaire
 metadata_df = metadata_df[['File Name', 'File Type', 'Found In', 'is Identical']]
 
 # Écriture du DataFrame dans un fichier Excel
